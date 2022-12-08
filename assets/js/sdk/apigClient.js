@@ -158,13 +158,13 @@ apigClientFactory.newClient = function (config) {
     apigClient.postsGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        apiGateway.core.utils.assertParametersDefined(params, ['user_id', 'post_id'], ['body']);
+        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
         
         var postsGetRequest = {
             verb: 'get'.toUpperCase(),
             path: pathComponent + uritemplate('/posts').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
             headers: apiGateway.core.utils.parseParametersToObject(params, []),
-            queryParams: apiGateway.core.utils.parseParametersToObject(params, ['user_id', 'post_id']),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
             body: body
         };
         
