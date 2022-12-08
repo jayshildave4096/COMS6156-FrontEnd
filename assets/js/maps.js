@@ -40,6 +40,7 @@ async function initMap() {
         return marker
     })
 
+    new MarkerClusterer(window.map, markers, {minimumClusterSize: 3})
 
 }
 
