@@ -24,19 +24,25 @@ async function initMap() {
     // GENERATE MARKERS FOR POSTS
     const markers = feedData.map(post => {
         let data = post.data
-
+        let marker_icon = data.type == "ALERT" ? "../images/alert.png" : "../images/marker.png"
         var marker = new google.maps.Marker({
             position: {lat: data.latitude, lng: data.longitude},
             map: window.map,
+            animation: google.maps.Animation.DROP,
             icon: {
-                url: data.type == "ALERT" ? "http://maps.google.com/mapfiles/kml/pal3/icon33.png" : "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                size: new google.maps.Size(32, 32),
+                scaledSize: new google.maps.Size(32, 32),
+                url: marker_icon
             }
         });
-
+        post_url = window.location.href.substring(0,window.location.href.indexOf("src")+3)
         google.maps.event.addListener(marker, "click", () => {
-            infoWindow.setContent(`<a href='/post/${data.post_id}'>${data.descr}</a>`)
+            infoWindow.setContent(`<h5 id="${data.post_id}" >${data.descr}</h5><br>
+                
+                <a href=${post_url + "/post.html?id=" + data.post_id} >Take me to post</a>`)
             infoWindow.open(window.map, marker)
         })
+
         return marker
     })
 
@@ -52,4 +58,7 @@ async function getFeedData() {
     });
 }
 
+
+
 window.initMap = initMap;
+
