@@ -1,6 +1,6 @@
-// Initialize and add the map
+// INITIALIZE AND ADD THE MAP
 async function initMap() {
-    // The map, centered at New York
+    // THE MAP, CENTERED AT NEW YORK
     const initial_coords = {lat: 40.7128, lng: -74.0060};
     const infoWindow = new google.maps.InfoWindow()
     window.map = new google.maps.Map(document.getElementById("map"), {
@@ -51,7 +51,7 @@ async function initMap() {
 }
 
 
-// function to make call to API Gateway to fetch all posts
+// FUNCTION TO MAKE CALL TO API GATEWAY TO FETCH ALL POSTS
 async function getFeedData() {
     return await sdk.postsGet({}, {}, {}).then(function (res) {
         return res.data.data

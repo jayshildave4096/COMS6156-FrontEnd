@@ -15,6 +15,7 @@ window.onload = async ()=>{
 
 
 }
+
 // function to make call to API Gateway to fetch all posts
 async function getPostData(id) {
     return await sdk.postsIdGet({id:parseInt(id)}, {}, {}).then(function (res) {
