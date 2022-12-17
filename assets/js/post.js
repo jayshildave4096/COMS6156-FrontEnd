@@ -4,11 +4,13 @@ window.onload = async ()=>{
     const params = Object.fromEntries(urlSearchParams.entries());
     try{
         let postData = await getPostData(params['id'])
+        console.log(postData.status)
         document.getElementById("post-div").style.display="inline"
+        document.getElementById("error-text").style.display="none"
         generateUI(postData)
     }
     catch(e){
-        document.getElementById("error-text").style.display="inline"
+        document.getElementById("error-text").innerHTML= `<h3 style="text-align: center">POST NOT FOUND : 404</h3>`
     }
 
 
