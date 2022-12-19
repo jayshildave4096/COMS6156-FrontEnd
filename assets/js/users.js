@@ -5,8 +5,10 @@ async function initUser() {
     // FETCH THE CURRENT USER
     let userData = await getUserData(user_id);
     let userFriends = await getUserFriends(user_id);
+    let userPosts = await getUserPosts(user_id);
     console.log(userData);
     console.log(userFriends);
+    console.log(userPosts);
     let user_first_name = userData['first_name'];
     let user_last_name = userData['last_name'];
     let user_email = userData['email'];
@@ -45,6 +47,14 @@ async function getUserData(user_id) {
 async function getUserFriends(user_id) {
     var params = {id: user_id}
     return await sdk.usersIdFriendsGet(params, {}, {}).then(function (res) {
+        console.log(res)
+        return res.data
+    });
+}
+
+async function getUserPosts(user_id) {
+    var params = {id: user_id}
+    return await sdk.usersIdPostsGet(params, {}, {}).then(function (res) {
         console.log(res)
         return res.data
     });
