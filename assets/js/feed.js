@@ -19,13 +19,14 @@ async function getFeedData() {
     });
 }
 
-async function getUser(id){
+//FUNCTION TO GET USER DETAILS
+async function getUser(id) {
     return await sdk.usersIdGet({id: id}, {}, {})
 }
 
 // FUNCTION TO GET FRIENDS OF USERS
-async function getFriendsOfUser(id){
-    return await sdk.usersIdFriendsGet({id:id},{},{})
+async function getFriendsOfUser(id) {
+    return await sdk.usersIdFriendsGet({id: id}, {}, {})
 }
 
 
@@ -35,6 +36,7 @@ function generateUI(data) {
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
         let user = await getUser(obj.data.user_id)
         user = user.data.data.first_name + " " + user.data.data.last_name
+        let post_image_url = obj.data.img_url === undefined ? "../images/event1.jpeg" : obj.data.img_url
         let card = ` <div class="card rounded" style="margin-top: 20px;">
                             <div class="card-header">
                                 <div class="d-flex align-items-center justify-content-between">
@@ -58,7 +60,7 @@ function generateUI(data) {
                             </div>
                             <div class="card-body">
                                 <p id="post-desc" class="mb-3 tx-14">${obj.data.descr}</p>
-                                <img class="img-fluid" src="../images/event1.jpeg" alt="">
+                                <img class="img-fluid" src="${post_image_url}" alt="">
                             </div>
                             <div class="card-footer">
                                 <div class="d-flex post-actions">
@@ -78,7 +80,7 @@ function generateUI(data) {
         document.getElementById("posts").innerHTML += card
 
     })
-    
+
 
 }
 
