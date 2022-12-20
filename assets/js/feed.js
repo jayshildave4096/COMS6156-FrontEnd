@@ -1,4 +1,3 @@
-
 window.onload = async () => {
     try {
         let postData = await getFeedData()
@@ -6,6 +5,7 @@ window.onload = async () => {
         document.getElementById("error-text").style.display = "none"
         console.log(postData)
         generateUI(postData)
+
     } catch (e) {
         document.getElementById("error-text").innerHTML = `Something went wrong`
     }
@@ -19,10 +19,22 @@ async function getFeedData() {
     });
 }
 
+async function getUser(id){
+    return await sdk.usersIdGet({id: id}, {}, {})
+}
+
+// FUNCTION TO GET FRIENDS OF USERS
+async function getFriendsOfUser(id){
+    return await sdk.usersIdFriendsGet({id:id},{},{})
+}
+
+
 function generateUI(data) {
-    let HTML = ""
-    data.forEach(obj => {
+    data.forEach(async obj => {
         let post_time = timeago.format(obj.data.post_time);
+        let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
+        let user = await getUser(obj.data.user_id)
+        user = user.data.data.first_name + " " + user.data.data.last_name
         let card = ` <div class="card rounded" style="margin-top: 20px;">
                             <div class="card-header">
                                 <div class="d-flex align-items-center justify-content-between">
@@ -30,7 +42,7 @@ function generateUI(data) {
                                         <img class="img-xs rounded-circle p-0"
                                              src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
                                         <div class="p-1 mt-3">
-                                            <p id="post-by" class="m-0">Mike Popescu</p>
+                                            <p id="post-by" class="m-0">${user}</p>
                                             <p class="tx-11 text-muted" id="post-time">${post_time}</p>
                                         </div>
                                     </div>
@@ -39,9 +51,7 @@ function generateUI(data) {
                                                 data-bs-toggle="dropdown" aria-expanded="false">
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            <li><a class="dropdown-item" href="">Go to Post</a></li>
-                                            <li><a class="dropdown-item" href="#">Delete</a></li>
-                                            <li><a class="dropdown-item" href="#">Unfollow</a></li>
+                                            <li><a class="dropdown-item" href=${post_url + "/post.html?id=" + obj.data.post_id}>Go to Post</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -65,7 +75,10 @@ function generateUI(data) {
                             </div>
                         </div>`
 
-        HTML += card
+        document.getElementById("posts").innerHTML += card
+
     })
-    document.getElementById("posts").innerHTML += HTML
+    
+
 }
+
