@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Social Maps</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+
+<script src="../assets/js/sdk/apigClient.js"></script>
+<!-- api gateway generated sdk -->
+<script src="../assets/js/sdk/lib/axios/dist/axios.standalone.js"></script>
+<script src="../assets/js/sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+<script src="../assets/js/sdk/lib/CryptoJS/rollups/sha256.js"></script>
+<script src="../assets/js/sdk/lib/CryptoJS/components/hmac.js"></script>
+<script src="../assets/js/sdk/lib/CryptoJS/components/enc-base64.js"></script>
+<script src="../assets/js/sdk/lib/url-template/url-template.js"></script>
+<script src="../assets/js/sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+<script src="../assets/js/sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+<script src="../assets/js/sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+<script src="../assets/js/sdk/lib/apiGatewayCore/utils.js"></script>
+
+
+<body>
+<!-- ============== NavBar ============== -->
+<div class="container">
+    <div class="row" style="margin:20px;">
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="users.html">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="map.html">Map</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Feed</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="login.html">Login/Register</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ============== NavBar ============== -->
+
+    <!--  ============== User Details ============== -->
+
+    <div class="profile-page tx-13">
+        <div class="row">
+            <div class="col-12 grid-margin">
+                <div class="profile-header">
+                    <div class="cover">
+                        <div class="gray-shade"></div>
+                        <figure>
+                            <img style="height:300px;" src="https://bootdey.com/img/Content/bg1.jpg"
+                                 class="img-fluid" alt="profile cover">
+                        </figure>
+                        <div class="cover-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <img class="profile-pic" src="https://bootdey.com/img/Content/avatar/avatar6.png"
+                                     alt="profile">
+                                <span class="profile-name" id="profile_name"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="header-links">
+                        <ul class="links d-flex align-items-center mt-3 mt-md-0 nav nav-tabs mb-3">
+                            <li class="header-link-item nav-item nav-link active  ml-3 p-3 border-left d-flex align-items-center"
+                                data-bs-toggle="tab"
+                                id="about"
+                                href="#about-tab"
+                                role="tab"
+                                aria-controls="about-tab"
+                                aria-selected="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-user mr-1 icon-md">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                <a class="pt-1px d-none d-md-block" href="#">About</a>
+                            </li>
+                            <li class="header-link-item nav-item nav-link ml-3 p-3 border-left d-flex align-items-center"
+                                data-bs-toggle="tab"
+                                id="friend"
+                                href="#friend-tab"
+                                role="tab"
+                                aria-controls="friend-tab"
+                                aria-selected="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-users mr-1 icon-md">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                                <a class="pt-1px d-none d-md-block" href="#">Friends</a>
+                            </li>
+                            <li class="header-link-item nav-item nav-link  ml-3 p-3 border-left d-flex align-items-center"
+                                data-bs-toggle="tab"
+                                id="post"
+                                href="#post-tab"
+                                role="tab"
+                                aria-controls="post-tab"
+                                aria-selected="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="feather feather-image mr-1 icon-md">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                                <a class="pt-1px d-none d-md-block" href="#">Posts</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- left wrapper start -->
+    <div class="tab-content" id="about-content">
+        <div
+                class="tab-pane fade show active"
+                id="about-tab"
+                role="tabpanel"
+                aria-labelledby="about"
+        >
+            <div class="d-none d-md-block col-md-12 col-xl-12 left-wrapper">
+                <div class="card rounded">
+                    <div class="card-body">
+                        <div class="mt-3">
+                            <label class="tx-11 font-weight-bold mb-0 text-uppercase">Name:</label>
+                            <p class="text-muted" id="Name"></p>
+                        </div>
+                        <div class="mt-3">
+                            <label class="tx-11 font-weight-bold mb-0 text-uppercase">Email:</label>
+                            <p class="text-muted" id="Email"></p>
+                        </div>
+                        <div class="mt-3">
+                            <label class="tx-11 font-weight-bold mb-0 text-uppercase">Address:</label>
+                            <p class="text-muted" id="Address"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="friend-tab" role="tabpanel" aria-labelledby="friend">
+            <div class="d-none d-md-block col-md-12 col-xl-12 left-wrapper">
+                <div class="card rounded">
+                    <div class="card-body">
+                        <div class="list-group" id="friends">
+                            <!-- <a href="#" class="list-group-item list-group-item-action"></a>
+                            <a href="#" class="list-group-item list-group-item-action"></a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="post-tab" role="tabpanel" aria-labelledby="post">
+            <div style="align-content: center;" class="col-md-6 col-xl-6 middle-wrapper">
+                <div class="row">
+                    <div id="posts" class="col-md-12 grid-margin">
+                        <div class="card rounded" style="margin-top: 20px;">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <img class="img-xs rounded-circle p-0"
+                                             src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
+                                        <div class="p-1 mt-1">
+                                            <p id="post-by" class="m-0">Mike Popescu</p>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li><a class="dropdown-item" href="">Go to Post</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p id="post-desc" class="mb-3 tx-14">hello there!</p>
+                                <img class="img-fluid" src="../images/event1.jpeg" alt="">
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex post-actions">
+                                    <a href="javascript:;" class="d-flex align-items-center text-muted mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-heart icon-md">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                        <p class="d-none d-md-block ml-2">Like</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+</body>
+<!--  ============== User Details ============== -->
+
+<script src="../assets/js/users.js"></script>
+<script>
+
+    var sdk = apigClientFactory.newClient({});
+
+</script>
+
+</html>
