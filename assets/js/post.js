@@ -4,7 +4,7 @@ window.onload = async ()=>{
     const params = Object.fromEntries(urlSearchParams.entries());
     try{
         let postData = await getPostData(params['id'])
-        console.log(postData.status)
+        console.log(postData)
         document.getElementById("post-div").style.display="inline"
         document.getElementById("error-text").style.display="none"
         generateUI(postData)
@@ -32,15 +32,21 @@ function generateUI(data){
     postData.innerHTML = `Posted on ${data.post_time}`
 
     let tags = document.getElementById("post-tags")
-    data.tags= data.tags.split("#")
-    let tagHTML = ""
-    data.tags.forEach(tag => {
-        if(tag !== "")
-         tagHTML += `<span class="badge badge-pill bg-primary badge-primary">#${tag}</span>   `
-    })
-    tags.innerHTML=tagHTML
+    if(data.tags) {
+        data.tags = data.tags.split("#")
+        let tagHTML = ""
+        data.tags.forEach(tag => {
+            if (tag !== "")
+                tagHTML += `<span class="badge badge-pill bg-primary badge-primary">#${tag}</span>   `
+        })
+        tags.innerHTML = tagHTML
+    }
 
     let description = document.getElementById("post-desc")
     description.innerHTML= `<p>${data.descr}</p>`
+
+    let image_url = document.getElementById("post-img")
+
+    image_url.src = data.image === null  ? (data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg") : data.image
 
 }

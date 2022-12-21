@@ -26,7 +26,8 @@ async function getUser(id) {
 
 // FUNCTION TO GET FRIENDS OF USERS
 async function getFriendsOfUser(id) {
-    return await sdk.usersIdFriendsGet({id: id}, {}, {})
+    // TODO : add dynamic ID
+    return await sdk.usersIdFriendsGet({id: 6}, {}, {})
 }
 
 
@@ -36,7 +37,7 @@ function generateUI(data) {
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
         let user = await getUser(obj.data.user_id)
         user = user.data.data.first_name + " " + user.data.data.last_name
-        let post_image_url = obj.data.img_url === undefined ? "../images/event1.jpeg" : obj.data.img_url
+        let post_image_url = obj.data.image === undefined ? obj.data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg" : obj.data.image
         let card = ` <div class="card rounded" style="margin-top: 20px;">
                             <div class="card-header">
                                 <div class="d-flex align-items-center justify-content-between">
