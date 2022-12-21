@@ -33,6 +33,7 @@ function generateUI(data) {
     data.forEach(async obj => {
         let post_time = timeago.format(obj.data.post_time);
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
+        let image_url = obj.data.image === null ? "../images/event1.jpeg" : obj.data.image
         let user = await getUser(obj.data.user_id)
         user = user.data.data.first_name + " " + user.data.data.last_name
         let card = ` <div class="card rounded" style="margin-top: 20px;">
@@ -58,7 +59,7 @@ function generateUI(data) {
                             </div>
                             <div class="card-body">
                                 <p id="post-desc" class="mb-3 tx-14">${obj.data.descr}</p>
-                                <img class="img-fluid" src="../images/event1.jpeg" alt="">
+                                <img class="img-fluid"  src="${image_url}" alt="">
                             </div>
                             <div class="card-footer">
                                 <div class="d-flex post-actions">
