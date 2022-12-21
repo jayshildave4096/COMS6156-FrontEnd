@@ -14,6 +14,7 @@ async function initUser() {
     let user_last_name = userData['last_name'];
     let user_email = userData['email'];
     let user_address = userData['address'];
+    let user_image_url = userData['img_url'] ? userData['img_url']: `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
     var div_welcome = document.getElementById('Name');
     div_welcome.innerHTML += user_first_name + ' ' + user_last_name;
     var div_welcome = document.getElementById('profile_name');
@@ -23,6 +24,7 @@ async function initUser() {
     var div_address = document.getElementById('Address');
     div_address.innerHTML += user_address
     let friends_list = document.getElementById("friends");
+    document.getElementById("user-image").src=user_image_url
     userFriends.forEach((item)=>{
         if(item.data) {
             let a = document.createElement("a");
