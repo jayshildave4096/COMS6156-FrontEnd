@@ -1,4 +1,3 @@
-
 window.onload = async () => {
     try {
         let postData = await getFeedData()
@@ -53,16 +52,17 @@ function generateUI(data) {
         let post_time = timeago.format(obj.data.post_time);
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
         let user = await getUser(obj.data.user_id)
-        user = user.data.data.first_name + " " + user.data.data.last_name
+        let user_image_url = user.data.data.img_url  ? user.data.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
+        userName = user.data.data.first_name + " " + user.data.data.last_name
         let post_image_url = obj.data.image === null ? obj.data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg" : obj.data.image
         let card = ` <div class="card rounded" style="margin-top: 20px;">
                             <div class="card-header">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center">
                                         <img class="img-xs rounded-circle p-0"
-                                             src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
+                                             src="${user_image_url}" alt="">
                                         <div class="p-1 mt-3">
-                                            <p id="post-by" class="m-0">${user}</p>
+                                            <p id="post-by" class="m-0"><a href="${post_url + "/users.html?id=" + user.data.data.id}">${userName}</a></p>
                                             <p class="tx-11 text-muted" id="post-time">${post_time}</p>
                                         </div>
                                     </div>
@@ -100,18 +100,21 @@ function generateUI(data) {
     })
 }
 
-function generateFriendsUI(friends,users) {
-    friendIds = []
-
-    friends.forEach(obj=>{friendIds.push(obj.data.data.id)})
-    users.forEach(obj=>{
-       if(!friendIds.includes(obj.data.id)){
-           let image_url = obj.data.img_url === null ? obj.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.randomInt(1,8)}.png`
-           let card = `<div  id="friends" class="d-flex justify-content-between mb-2 pb-2 border-bottom"><div class="d-flex align-items-center hover-pointer">
+function generateFriendsUI(friends, users) {
+    let friendIds = []
+    let cards = []
+    friends.forEach(obj => {
+        friendIds.push(obj.data.data.id)
+    })
+    users.forEach(obj => {
+        if (!friendIds.includes(obj.data.id)) {
+            let user_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3) + "/users.html?id=" + obj.data.id
+            let image_url = obj.data.img_url  ? obj.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
+            cards.push(`<div  id="friends" class="d-flex justify-content-between mb-2 pb-2 border-bottom"><div class="d-flex align-items-center hover-pointer">
                                         <img class="img-xs rounded-circle"
                                              src="${image_url}" alt="">
                                         <div class="ml-2 p-1 mt-3">
-                                            <p>${obj.data.first_name + " " + obj.data.last_name}</p>
+                                            <p><a href="${user_url}">${obj.data.first_name + " " + obj.data.last_name}</a></p>
 
                                         </div>
                                     </div>
@@ -126,11 +129,16 @@ function generateFriendsUI(friends,users) {
                                             <line x1="20" y1="8" x2="20" y2="14"></line>
                                             <line x1="23" y1="11" x2="17" y2="11"></line>
                                         </svg>
-                                    </button></div>`
-           document.getElementById("friends").innerHTML+=card
-       }
+                                    </button></div>`)
+
+        }
+
     })
-    console.log(friendIds,userIds)
+    const shuffled = [...cards].sort(() => 0.5 - Math.random());
+    cards = shuffled.slice(0, 5);
+
+    document.getElementById("friends").innerHTML += cards.join(" ")
+
 
 }
 
