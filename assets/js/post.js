@@ -1,26 +1,24 @@
-
-window.onload = async ()=>{
+window.onload = async () => {
     if (!window.localStorage.getItem("currentUser")) {
         window.localStorage.clear()
         window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
 
     }
-    document.getElementById("user-nav-link").href=`users.html?id=${window.localStorage.getItem("currentUser")}`
-    document.getElementById("logout-tab").addEventListener("click",()=>{
+    document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
+    document.getElementById("logout-tab").addEventListener("click", () => {
         window.localStorage.clear()
-        window.location.href="http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
     })
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());
-    try{
+    try {
         let postData = await getPostData(params['id'])
         console.log(postData)
-        document.getElementById("post-div").style.display="inline"
-        document.getElementById("error-text").style.display="none"
+        document.getElementById("post-div").style.display = "inline"
+        document.getElementById("error-text").style.display = "none"
         generateUI(postData)
-    }
-    catch(e){
-        document.getElementById("error-text").innerHTML= `<h3 style="text-align: center">POST NOT FOUND : 404</h3>`
+    } catch (e) {
+        document.getElementById("error-text").innerHTML = `<h3 style="text-align: center">POST NOT FOUND : 404</h3>`
     }
 
 
@@ -28,21 +26,21 @@ window.onload = async ()=>{
 
 // FUNCTION TO MAKE CALL TO API GATEWAY TO FETCH ALL POSTS
 async function getPostData(id) {
-    return await sdk.postsIdGet({id:parseInt(id)}, {}, {}).then(function (res) {
+    return await sdk.postsIdGet({id: parseInt(id)}, {}, {}).then(function (res) {
         return res.data.data
     });
 }
 
-function generateUI(data){
+function generateUI(data) {
 
     let title = document.getElementById("post-title")
     title.innerHTML = data.descr
 
-    let postData= document.getElementById("post-date")
+    let postData = document.getElementById("post-date")
     postData.innerHTML = `Posted on ${data.post_time}`
 
     let tags = document.getElementById("post-tags")
-    if(data.tags) {
+    if (data.tags) {
         data.tags = data.tags.split("#")
         let tagHTML = ""
         data.tags.forEach(tag => {
@@ -53,14 +51,11 @@ function generateUI(data){
     }
 
     let description = document.getElementById("post-desc")
-    description.innerHTML= `<p>${data.descr}</p>`
+    description.innerHTML = `<p>${data.descr}</p>`
 
     let image_url = document.getElementById("post-img")
 
-    image_url.src = data.image === null  ? (data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg") : data.image
+    image_url.src = data.image === null ? (data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg") : data.image
 
 }
 
-window.onclose=()=>{
-    window.localStorage.clear()
-}

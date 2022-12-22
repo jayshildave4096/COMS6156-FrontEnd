@@ -2,18 +2,26 @@ async function initUser() {
 
     if (!window.localStorage.getItem("currentUser")) {
         window.localStorage.clear()
-        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com"
 
     }
 
     const user_id = get_id();
     console.log(user_id);
-    window.localStorage["currentUser"]=user_id
-    document.getElementById("user-nav-link").href=`users.html?id=${user_id}`
-    document.getElementById("logout-tab").addEventListener("click",()=>{
+    if (user_id == -1) {
+        alert("No User Found")
         window.localStorage.clear()
-        window.location.href="http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
-    })
+        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com"
+    } else {
+        window.localStorage["currentUser"] = user_id
+    }
+
+    document.getElementById("user-nav-link").href = `users.html?id=${user_id}`
+    // document.getElementById("logout-tab").addEventListener("click", () => {
+    //     window.localStorage.clear()
+    //     window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com"
+    // })
+
     // FETCH THE CURRENT USER
 
     let userData = await getUserData(user_id);
@@ -26,7 +34,7 @@ async function initUser() {
     let user_last_name = userData['last_name'];
     let user_email = userData['email'];
     let user_address = userData['address'];
-    let user_image_url = userData['img_url'] ? userData['img_url']: `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
+    let user_image_url = userData['img_url'] ? userData['img_url'] : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
     var div_welcome = document.getElementById('Name');
     div_welcome.innerHTML += user_first_name + ' ' + user_last_name;
     var div_welcome = document.getElementById('profile_name');
@@ -36,18 +44,18 @@ async function initUser() {
     var div_address = document.getElementById('Address');
     div_address.innerHTML += user_address
     let friends_list = document.getElementById("friends");
-    document.getElementById("user-image").src=user_image_url
-    userFriends.forEach((item)=>{
-        if(item.data) {
+    document.getElementById("user-image").src = user_image_url
+    userFriends.forEach((item) => {
+        if (item.data) {
             let a = document.createElement("a");
             let friend_details = item.data.data
             console.log(friend_details);
             a.innerText = friend_details['first_name'] + ' ' + friend_details['last_name'];
-            a.href = "users.html?id="+friend_details.id;
+            a.href = "users.html?id=" + friend_details.id;
             friends_list.appendChild(a);
         }
-      })
-    generatePostsUI(userPosts,user_image_url);
+    })
+    generatePostsUI(userPosts, user_image_url);
 }
 
 
@@ -75,23 +83,23 @@ async function getUserPosts(user_id) {
     });
 }
 
-function get_id(){
+function get_id() {
     var currentUrl = window.location.href;
     var tagLocation = currentUrl.indexOf("=");
     console.log(tagLocation);
-    if(tagLocation<0){
-     console.warn("no id could be found");
-     return -1;
-    }else{
-      return currentUrl.substr(tagLocation+1);
+    if (tagLocation < 0) {
+        console.warn("no id could be found");
+        return -1;
+    } else {
+        return currentUrl.substr(tagLocation + 1);
     }
-  }
+}
 
-async function getUser(id){
+async function getUser(id) {
     return await sdk.usersIdGet({id: id}, {}, {})
 }
 
-function generatePostsUI(data,user_image_url) {
+function generatePostsUI(data, user_image_url) {
     data.forEach(async obj => {
         let post_time = timeago.format(obj.data.post_time);
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
@@ -136,16 +144,13 @@ function generatePostsUI(data,user_image_url) {
             </div>
         </div>
     </div>`
-                          
+
 
         document.getElementById("posts").innerHTML += card
 
     })
-    
+
 
 }
 
 window.onload = initUser;
-window.onclose=()=>{
-    window.localStorage.clear()
-}

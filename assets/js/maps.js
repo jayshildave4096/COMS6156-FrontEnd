@@ -1,14 +1,14 @@
 // INITIALIZE AND ADD THE MAP
 async function initMap() {
-    if(!window.localStorage.getItem("currentUser")){
+    if (!window.localStorage.getItem("currentUser")) {
         window.localStorage.clear()
         window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
 
     }
-    document.getElementById("user-nav-link").href=`users.html?id=${window.localStorage.getItem("currentUser")}`
-    document.getElementById("logout-tab").addEventListener("click",()=>{
+    document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
+    document.getElementById("logout-tab").addEventListener("click", () => {
         window.localStorage.clear()
-        window.location.href="http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
     })
     // THE MAP, CENTERED AT NEW YORK
     const initial_coords = {lat: 40.7128, lng: -74.0060};
@@ -45,7 +45,7 @@ async function initMap() {
                 url: marker_icon
             }
         });
-        post_url = window.location.href.substring(0,window.location.href.indexOf("src")+3)
+        post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
         google.maps.event.addListener(marker, "click", () => {
             infoWindow.setContent(`<h5 id="${data.post_id}" >${data.descr}</h5><br>
                 
@@ -69,9 +69,7 @@ async function getFeedData() {
 }
 
 
-
 window.initMap = initMap;
-window.onclose=()=>{
-    window.localStorage.clear()
-}
+
+
 

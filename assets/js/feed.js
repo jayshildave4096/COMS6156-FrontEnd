@@ -1,14 +1,13 @@
 window.onload = async () => {
     try {
-        if(!window.localStorage.getItem("currentUser")){
+        if (!window.localStorage.getItem("currentUser")) {
             window.localStorage.clear()
-
             window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
         }
-        document.getElementById("user-nav-link").href=`users.html?id=${window.localStorage.getItem("currentUser")}`
-        document.getElementById("logout-tab").addEventListener("click",()=>{
+        document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
+        document.getElementById("logout-tab").addEventListener("click", () => {
             window.localStorage.clear()
-            window.location.href="http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+            window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
         })
         let postData = await getFeedData()
         let currentUserID = window.localStorage.getItem("currentUser")
@@ -58,17 +57,16 @@ async function getUser(id) {
 }
 
 //FUNCTION FOLLOW FRIEND
-window.followFriend = async (event)=>{
-    if(event.target.id.startsWith("user")){
+window.followFriend = async (event) => {
+    if (event.target.id.startsWith("user")) {
         let currentUser = window.localStorage.getItem("currentUser")
-        let id = event.target.id.substring(5,event.target.id.length)
+        let id = event.target.id.substring(5, event.target.id.length)
 
-        try{
-            await sdk.usersIdFriendsPost({id:currentUser},{id:id},{})
+        try {
+            await sdk.usersIdFriendsPost({id: currentUser}, {id: id}, {})
             alert("Friend added Successfully")
             window.location.reload()
-        }
-        catch(e){
+        } catch (e) {
             alert("Something went wrong")
         }
 
@@ -82,7 +80,7 @@ function generateUI(data) {
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
 
         let user = await getUser(obj.data.user_id)
-        let user_image_url = user.data.data.img_url  ? user.data.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
+        let user_image_url = user.data.data.img_url ? user.data.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
         userName = user.data.data.first_name + " " + user.data.data.last_name
 
         let post_image_url = obj.data.image === null ? obj.data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg" : obj.data.image
@@ -140,7 +138,7 @@ function generateFriendsUI(friends, users) {
     users.forEach(obj => {
         if (!friendIds.includes(obj.data.id) && obj.data.id !== window.localStorage.getItem("currentUser")) {
             let user_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3) + "/users.html?id=" + obj.data.id
-            let image_url = obj.data.img_url  ? obj.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
+            let image_url = obj.data.img_url ? obj.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
             let body = `<div  id="friends" class="d-flex justify-content-between mb-2 pb-2 border-bottom"><div class="d-flex align-items-center hover-pointer">
                                         <img class="img-xs rounded-circle"
                                              src="${image_url}" alt="">
@@ -162,7 +160,7 @@ function generateFriendsUI(friends, users) {
                                         </svg>
                                     </button></div>`
             cards.push(body)
-            document.body.addEventListener("click",followFriend)
+            document.body.addEventListener("click", followFriend)
 
         }
 
@@ -174,7 +172,5 @@ function generateFriendsUI(friends, users) {
     return cards
 }
 
-window.onclose=()=>{
-    window.localStorage.clear()
-}
+
 
