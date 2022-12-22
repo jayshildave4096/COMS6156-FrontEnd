@@ -2,16 +2,21 @@ window.onload = async () => {
     try {
         if(!window.localStorage.getItem("currentUser")){
             window.localStorage.clear()
+
             window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
-
         }
+        document.getElementById("user-nav-link").href=`users.html?id=${window.localStorage.getItem("currentUser")}`
+        document.getElementById("logout-tab").addEventListener("click",()=>{
+            window.localStorage.clear()
+            window.location.href="http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+        })
         let postData = await getFeedData()
-
+        let currentUserID = window.localStorage.getItem("currentUser")
         document.getElementById("feed-div").style.display = "block"
         document.getElementById("error-text").style.display = "none"
         console.log("POSTS", postData)
         generateUI(postData)
-        let friendsData = await getFriendsOfUser(6)
+        let friendsData = await getFriendsOfUser(currentUserID)
         console.log("FRIENDS", friendsData)
         let allUsers = await getAllUsers()
         console.log("USERS", allUsers)
@@ -35,7 +40,7 @@ async function getFeedData() {
 // FUNCTION TO GET FRIENDS OF USERS
 async function getFriendsOfUser(id) {
     // TODO : add dynamic ID
-    return await sdk.usersIdFriendsGet({id: 6}, {}, {}).then(function (res) {
+    return await sdk.usersIdFriendsGet({id: id}, {}, {}).then(function (res) {
         return res.data
     });
 }
@@ -167,5 +172,9 @@ function generateFriendsUI(friends, users) {
 
     document.getElementById("friends").innerHTML += cards.join(" ")
     return cards
+}
+
+window.onclose=()=>{
+    window.localStorage.clear()
 }
 

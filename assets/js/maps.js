@@ -5,6 +5,11 @@ async function initMap() {
         window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
 
     }
+    document.getElementById("user-nav-link").href=`users.html?id=${window.localStorage.getItem("currentUser")}`
+    document.getElementById("logout-tab").addEventListener("click",()=>{
+        window.localStorage.clear()
+        window.location.href="http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+    })
     // THE MAP, CENTERED AT NEW YORK
     const initial_coords = {lat: 40.7128, lng: -74.0060};
     const infoWindow = new google.maps.InfoWindow()
@@ -66,4 +71,7 @@ async function getFeedData() {
 
 
 window.initMap = initMap;
+window.onclose=()=>{
+    window.localStorage.clear()
+}
 

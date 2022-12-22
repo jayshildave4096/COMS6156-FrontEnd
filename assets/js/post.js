@@ -1,5 +1,15 @@
 
 window.onload = async ()=>{
+    if (!window.localStorage.getItem("currentUser")) {
+        window.localStorage.clear()
+        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+
+    }
+    document.getElementById("user-nav-link").href=`users.html?id=${window.localStorage.getItem("currentUser")}`
+    document.getElementById("logout-tab").addEventListener("click",()=>{
+        window.localStorage.clear()
+        window.location.href="http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+    })
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());
     try{
@@ -49,4 +59,8 @@ function generateUI(data){
 
     image_url.src = data.image === null  ? (data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg") : data.image
 
+}
+
+window.onclose=()=>{
+    window.localStorage.clear()
 }

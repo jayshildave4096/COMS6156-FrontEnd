@@ -9,7 +9,11 @@ async function initUser() {
     const user_id = get_id();
     console.log(user_id);
     window.localStorage["currentUser"]=user_id
-
+    document.getElementById("user-nav-link").href=`users.html?id=${user_id}`
+    document.getElementById("logout-tab").addEventListener("click",()=>{
+        window.localStorage.clear()
+        window.location.href="http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+    })
     // FETCH THE CURRENT USER
 
     let userData = await getUserData(user_id);
@@ -142,3 +146,6 @@ function generatePostsUI(data,user_image_url) {
 }
 
 window.onload = initUser;
+window.onclose=()=>{
+    window.localStorage.clear()
+}
