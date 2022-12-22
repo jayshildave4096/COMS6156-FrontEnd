@@ -14,6 +14,12 @@ async function initUser() {
     let user_last_name = userData['last_name'];
     let user_email = userData['email'];
     let user_address = userData['address'];
+    if (user_first_name == null){
+        user_first_name = userData['organization_name']
+    }
+    if (user_last_name == null){
+        user_last_name = ''
+    }
     var div_welcome = document.getElementById('Name');
     div_welcome.innerHTML += user_first_name + ' ' + user_last_name;
     var div_welcome = document.getElementById('profile_name');
@@ -28,7 +34,15 @@ async function initUser() {
             let a = document.createElement("a");
             let friend_details = item.data.data
             console.log(friend_details);
-            a.innerText = friend_details['first_name'] + ' ' + friend_details['last_name'];
+            let user_first_name = friend_details['first_name'];
+            let user_last_name = friend_details['last_name'];
+            if (user_first_name == null){
+                user_first_name = friend_details['organization_name']
+            }
+            if (user_last_name == null){
+                user_last_name = ''
+            }
+            a.innerText = user_first_name + ' ' + user_last_name;
             a.href = "users.html?id="+friend_details.id;
             friends_list.appendChild(a);
         }
