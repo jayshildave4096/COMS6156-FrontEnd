@@ -1,5 +1,6 @@
 window.onload = async () => {
     try {
+
         if (!window.localStorage.getItem("currentUser")) {
             window.localStorage.clear()
             window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"

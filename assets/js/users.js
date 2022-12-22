@@ -5,7 +5,6 @@ async function initUser() {
         window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
 
     }
-
     const user_id = get_id();
     console.log(user_id);
     if (user_id == -1) {
@@ -15,10 +14,8 @@ async function initUser() {
     } else {
         window.localStorage["currentUser"] = user_id
     }
-
     document.getElementById("user-nav-link").href = `users.html?id=${user_id}`
-
-
+    
     // FETCH THE CURRENT USER
 
     let userData = await getUserData(user_id);
@@ -46,7 +43,6 @@ async function initUser() {
         if (item.data) {
             let a = document.createElement("a");
             let friend_details = item.data.data
-            console.log(friend_details);
             a.innerText = friend_details['first_name'] + ' ' + friend_details['last_name'];
             a.href = "users.html?id=" + friend_details.id;
             friends_list.appendChild(a);
@@ -59,7 +55,6 @@ async function initUser() {
 async function getUserData(user_id) {
     var params = {id: user_id}
     return await sdk.usersIdGet(params, {}, {}).then(function (res) {
-        console.log(res)
         return res.data.data
     });
 }
@@ -67,7 +62,6 @@ async function getUserData(user_id) {
 async function getUserFriends(user_id) {
     var params = {id: user_id}
     return await sdk.usersIdFriendsGet(params, {}, {}).then(function (res) {
-        console.log(res)
         return res.data
     });
 }

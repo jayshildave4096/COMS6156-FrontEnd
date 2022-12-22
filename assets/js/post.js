@@ -5,7 +5,7 @@ window.onload = async () => {
 
     }
     document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
-    document.getElementById("logout-tab").addEventListener("click", () => {
+    document.getElementById("logout-tab").addEventListener("click",  () => {
         window.localStorage.clear()
         window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
     })
