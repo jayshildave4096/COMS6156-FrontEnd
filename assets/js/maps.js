@@ -1,5 +1,10 @@
 // INITIALIZE AND ADD THE MAP
 async function initMap() {
+    if(!window.localStorage.getItem("currentUser")){
+        window.localStorage.clear()
+        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+
+    }
     // THE MAP, CENTERED AT NEW YORK
     const initial_coords = {lat: 40.7128, lng: -74.0060};
     const infoWindow = new google.maps.InfoWindow()

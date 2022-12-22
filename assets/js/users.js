@@ -1,6 +1,14 @@
 async function initUser() {
+
+    if (!window.localStorage.getItem("currentUser")) {
+        window.localStorage.clear()
+        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+
+    }
+
     const user_id = get_id();
     console.log(user_id);
+    window.localStorage["currentUser"]=user_id
 
     // FETCH THE CURRENT USER
 
@@ -35,7 +43,7 @@ async function initUser() {
             friends_list.appendChild(a);
         }
       })
-    generatePostsUI(userPosts);
+    generatePostsUI(userPosts,user_image_url);
 }
 
 
@@ -79,7 +87,7 @@ async function getUser(id){
     return await sdk.usersIdGet({id: id}, {}, {})
 }
 
-function generatePostsUI(data) {
+function generatePostsUI(data,user_image_url) {
     data.forEach(async obj => {
         let post_time = timeago.format(obj.data.post_time);
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
@@ -90,7 +98,7 @@ function generatePostsUI(data) {
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <img class="img-xs rounded-circle p-0"
-                         src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
+                         src="${user_image_url}" alt="">
                     <div class="p-1 mt-3">
                         <p id="post-by" class="m-0">${user}</p>
                         <p class="tx-11 text-muted" id="post-time">${post_time}</p>
