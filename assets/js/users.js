@@ -28,25 +28,7 @@ async function initUser() {
     div_email.innerHTML += user_email
     var div_address = document.getElementById('Address');
     div_address.innerHTML += user_address
-    let friends_list = document.getElementById("friends");
-    userFriends.forEach((item)=>{
-        if(item.data) {
-            let a = document.createElement("a");
-            let friend_details = item.data.data
-            console.log(friend_details);
-            let user_first_name = friend_details['first_name'];
-            let user_last_name = friend_details['last_name'];
-            if (user_first_name == null){
-                user_first_name = friend_details['organization_name']
-            }
-            if (user_last_name == null){
-                user_last_name = ''
-            }
-            a.innerText = user_first_name + ' ' + user_last_name;
-            a.href = "users.html?id="+friend_details.id;
-            friends_list.appendChild(a);
-        }
-      })
+    generateFriendsUI(userFriends);
     generatePostsUI(userPosts);
 }
 
@@ -89,6 +71,37 @@ function get_id(){
 
 async function getUser(id){
     return await sdk.usersIdGet({id: id}, {}, {})
+}
+
+function generateFriendsUI(friends) {
+    let friends_list = document.getElementById("friends");
+    friends.forEach(obj => {
+        obj = obj.data
+        let user_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3) + "/users.html?id=" + obj.data.id
+        let image_url = obj.data.img_url  ? obj.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
+        let user_first_name = obj.data.first_name;
+        let user_last_name = obj.data.last_name;
+        if (user_first_name == null){
+            user_first_name = obj.data.organization_name;
+        }
+        if (user_last_name == null){
+            user_last_name = ''
+        }
+        friends_list.innerHTML += `<div  id="friends" class="d-flex justify-content-between mb-2 pb-2 border-bottom"><div class="d-flex align-items-center hover-pointer">
+                                    <img class="img-xs rounded-circle"
+                                         src="${image_url}" alt="">
+                                    <div class="ml-2 p-1 mt-3">
+                                        <p><a href="${user_url}">${user_first_name + " " + user_last_name}</a></p>
+
+                                        </div>
+                                    </div>
+                                    <button id="${obj.data.id}" class="btn btn-icon">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-minus">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="8.5" cy="7" r="4"></circle>
+                                    <line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                                    </button></div>`
+    })
 }
 
 function generatePostsUI(data) {
