@@ -2,7 +2,7 @@ async function initUser() {
 
     if (!window.localStorage.getItem("currentUser")) {
         window.localStorage.clear()
-        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com"
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
 
     }
 
@@ -11,16 +11,13 @@ async function initUser() {
     if (user_id == -1) {
         alert("No User Found")
         window.localStorage.clear()
-        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com"
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
     } else {
         window.localStorage["currentUser"] = user_id
     }
 
     document.getElementById("user-nav-link").href = `users.html?id=${user_id}`
-    // document.getElementById("logout-tab").addEventListener("click", () => {
-    //     window.localStorage.clear()
-    //     window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com"
-    // })
+
 
     // FETCH THE CURRENT USER
 

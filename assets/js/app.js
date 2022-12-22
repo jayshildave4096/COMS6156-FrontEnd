@@ -12,10 +12,9 @@ window.onload = async () => {
         if (window.localStorage.getItem("currentUser")) {
             window.location.href = `/src/users.html?id=${window.localStorage.getItem("currentUser")}`
         } else {
-            let r = await fetch("https://socialmaps.link/auth/login").then((res) => {
+            let r = await fetch("https://socialmaps.link/auth/login",{"headers":{"Access-Allow-Origin":"*"}}).then((res) => {
                 window.location.href = res.url
             })
-
         }
     }
 }

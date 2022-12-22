@@ -1,13 +1,13 @@
 window.onload = async () => {
     if (!window.localStorage.getItem("currentUser")) {
         window.localStorage.clear()
-        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
 
     }
     document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
     document.getElementById("logout-tab").addEventListener("click", () => {
         window.localStorage.clear()
-        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
     })
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());

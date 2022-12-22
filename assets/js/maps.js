@@ -2,13 +2,13 @@
 async function initMap() {
     if (!window.localStorage.getItem("currentUser")) {
         window.localStorage.clear()
-        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
 
     }
     document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
     document.getElementById("logout-tab").addEventListener("click", () => {
         window.localStorage.clear()
-        window.location.href = "http://socialmaps.s3-website-us-east-1.amazonaws.com/index.html"
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
     })
     // THE MAP, CENTERED AT NEW YORK
     const initial_coords = {lat: 40.7128, lng: -74.0060};
