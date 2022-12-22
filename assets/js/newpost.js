@@ -1,5 +1,5 @@
 window.onload = ()=>{
-
+    document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
     document.getElementById("submit-button").addEventListener("click",handleSubmit)
 }
 handleSubmit = async ()=>{
