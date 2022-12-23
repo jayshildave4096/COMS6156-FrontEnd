@@ -1,6 +1,24 @@
+
+
 async function initUser() {
+
     const user_id = get_id();
+    let URL_user;
     console.log(user_id);
+    if (user_id == -1) {
+        alert("No User Found")
+        window.localStorage.clear()
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net/index.html"
+    }
+    else{
+        if(!window.localStorage.getItem('currentUser')){
+            window.localStorage['currentUser']=user_id
+        }
+        URL_user=user_id
+    }
+
+
+    document.getElementById("user-nav-link").href = `users.html?id=${user_id}`
 
     // FETCH THE CURRENT USER
 
@@ -14,6 +32,7 @@ async function initUser() {
     let user_last_name = userData['last_name'];
     let user_email = userData['email'];
     let user_address = userData['address'];
+    let user_image_url = userData['img_url'] ? userData['img_url'] : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
     var div_welcome = document.getElementById('Name');
     div_welcome.innerHTML += user_first_name + ' ' + user_last_name;
     var div_welcome = document.getElementById('profile_name');
@@ -23,24 +42,35 @@ async function initUser() {
     var div_address = document.getElementById('Address');
     div_address.innerHTML += user_address
     let friends_list = document.getElementById("friends");
-    userFriends.forEach((item)=>{
-        if(item.data) {
-            let a = document.createElement("a");
+    document.getElementById("user-image").src = user_image_url
+    userFriends.forEach((item) => {
+        if (item.data) {
             let friend_details = item.data.data
-            console.log(friend_details);
-            a.innerText = friend_details['first_name'] + ' ' + friend_details['last_name'];
-            a.href = "users.html?id="+friend_details.id;
-            friends_list.appendChild(a);
+            let card = ` 
+                                        <li  class="p-2 list-group-item list-group-item-action">
+                                        <div class="row">
+<div class="col-11"><a href="${"users.html?id=" + friend_details.id}">${friend_details['first_name'] + ' ' + friend_details['last_name']}</a>
+</div>
+<div class="col-1">
+<span class="pull-right">${URL_user===window.localStorage['currentUser']?`<button id="friend_id-${friend_details.id}" class="unfollow-button btn btn-warning mr-2 ">Unfollow</button>`: ""}</span>
+</div>
+</div>
+                </li>
+                                    `
+            friends_list.innerHTML += card;
         }
-      })
-    generatePostsUI(userPosts);
+    })
+    generatePostsUI(userPosts, user_image_url);
+    document.getElementById("newpost-button").addEventListener("click", () => {
+        window.location.href = "newpost.html"
+    })
+    document.body.addEventListener("click", handleUnfollow)
 }
 
 
 async function getUserData(user_id) {
     var params = {id: user_id}
     return await sdk.usersIdGet(params, {}, {}).then(function (res) {
-        console.log(res)
         return res.data.data
     });
 }
@@ -48,7 +78,6 @@ async function getUserData(user_id) {
 async function getUserFriends(user_id) {
     var params = {id: user_id}
     return await sdk.usersIdFriendsGet(params, {}, {}).then(function (res) {
-        console.log(res)
         return res.data
     });
 }
@@ -61,23 +90,40 @@ async function getUserPosts(user_id) {
     });
 }
 
-function get_id(){
+async function handleUnfollow(event) {
+    if (URL_user === window.localStorage['currentUser']) {
+        if (event.target.id.startsWith("friend_id")) {
+            let currentUser = window.localStorage['currentUser']
+            let id = event.target.id.substring(10)
+            try {
+                let r = await sdk.usersIdFriendsDelete({id: currentUser}, {id: id}, {})
+                alert("Friend Unfollowed Successfully")
+                location.reload()
+            } catch (e) {
+                alert("Could not Unfollow Friend")
+            }
+
+        }
+    }
+}
+
+function get_id() {
     var currentUrl = window.location.href;
     var tagLocation = currentUrl.indexOf("=");
     console.log(tagLocation);
-    if(tagLocation<0){
-     console.warn("no id could be found");
-     return -1;
-    }else{
-      return currentUrl.substr(tagLocation+1);
+    if (tagLocation < 0) {
+        console.warn("no id could be found");
+        return -1;
+    } else {
+        return currentUrl.substr(tagLocation + 1);
     }
-  }
+}
 
-async function getUser(id){
+async function getUser(id) {
     return await sdk.usersIdGet({id: id}, {}, {})
 }
 
-function generatePostsUI(data) {
+function generatePostsUI(data, user_image_url) {
     data.forEach(async obj => {
         let post_time = timeago.format(obj.data.post_time);
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
@@ -88,7 +134,7 @@ function generatePostsUI(data) {
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <img class="img-xs rounded-circle p-0"
-                         src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="">
+                         src="${user_image_url}" alt="">
                     <div class="p-1 mt-3">
                         <p id="post-by" class="m-0">${user}</p>
                         <p class="tx-11 text-muted" id="post-time">${post_time}</p>
@@ -122,12 +168,12 @@ function generatePostsUI(data) {
             </div>
         </div>
     </div>`
-                          
+
 
         document.getElementById("posts").innerHTML += card
 
     })
-    
+
 
 }
 
