@@ -30,13 +30,14 @@ async function initUser() {
     console.log(userPosts);
     let user_first_name = userData['first_name'];
     let user_last_name = userData['last_name'];
+    let userName = (user_first_name && user_last_name) ? user_first_name + " " + user_last_name : userData['organization_name']
     let user_email = userData['email'];
     let user_address = userData['address'];
     let user_image_url = userData['img_url'] ? userData['img_url'] : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
     var div_welcome = document.getElementById('Name');
-    div_welcome.innerHTML += user_first_name + ' ' + user_last_name;
+    div_welcome.innerHTML += userName;
     var div_welcome = document.getElementById('profile_name');
-    div_welcome.innerHTML += user_first_name + ' ' + user_last_name;
+    div_welcome.innerHTML += userName;
     var div_email = document.getElementById('Email');
     div_email.innerHTML += user_email
     var div_address = document.getElementById('Address');
@@ -44,12 +45,14 @@ async function initUser() {
     let friends_list = document.getElementById("friends");
     document.getElementById("user-image").src = user_image_url
     userFriends.forEach((item) => {
+
         if (item.data) {
             let friend_details = item.data.data
+            let friendName = (friend_details['first_name'] && friend_details['last_name']) ? friend_details['first_name'] + " " + friend_details['last_name'] : friend_details['organization_name']
             let card = ` 
                                         <li  class="p-2 list-group-item list-group-item-action">
                                         <div class="row">
-<div class="col-11"><a href="${"users.html?id=" + friend_details.id}">${friend_details['first_name'] + ' ' + friend_details['last_name']}</a>
+<div class="col-11"><a href="${"users.html?id=" + friend_details.id}">${friendName}</a>
 </div>
 <div class="col-1">
 <span class="pull-right">${URL_user===window.localStorage['currentUser']?`<button id="friend_id-${friend_details.id}" class="unfollow-button btn btn-warning mr-2 ">Unfollow</button>`: ""}</span>
@@ -128,6 +131,7 @@ function generatePostsUI(data, user_image_url) {
         let post_time = timeago.format(obj.data.post_time);
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
         let user = await getUser(obj.data.user_id)
+        let post_image_url = obj.data.image === null ? obj.data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg" : obj.data.image
         user = user.data.data.first_name + " " + user.data.data.last_name
         let card = ` <div class="card rounded" style="margin-top: 20px;">
         <div class="card-header">
@@ -152,7 +156,7 @@ function generatePostsUI(data, user_image_url) {
         </div>
         <div class="card-body">
             <p id="post-desc" class="mb-3 tx-14">${obj.data.descr}</p>
-            <img class="img-fluid" src="../images/event1.jpeg" alt="">
+            <img class="img-fluid" src="${post_image_url}" alt="">
         </div>
         <div class="card-footer">
             <div class="d-flex post-actions">

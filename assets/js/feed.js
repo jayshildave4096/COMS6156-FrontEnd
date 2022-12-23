@@ -1,6 +1,6 @@
 let currentPageNumber = 1
-let links=null
-let postData=null
+let links = null
+let postData = null
 window.onload = async () => {
     try {
         //IF NO USER LOGGED IN
@@ -36,29 +36,32 @@ window.onload = async () => {
         console.log("USERS", allUsers)
         generateFriendsUI(friendsData, allUsers)
 
+        //EVENT LISTENER FOR PREV BUTTON
         document.getElementById("prev-button").addEventListener("click", async (event) => {
 
             let prevPageURL = links.find(o => o.rel === "prev");
 
-            await fetch(prevPageURL['href']).then(async (res)=>{
+            await fetch(prevPageURL['href']).then(async (res) => {
 
-                res= await res.json()
-                links=res.links
-                postData=res.data
+                res = await res.json()
+                links = res.links
+                postData = res.data
                 generateUI(postData)
-                currentPageNumber-=1
+                currentPageNumber -= 1
                 document.getElementById("prev-button").disabled = currentPageNumber === 1 ? true : false
             })
         })
+
+        //EVENT LISTENER FOR NEXT BUTTON
         document.getElementById("next-button").addEventListener("click", async (event) => {
             let nextPageURL = links.find(o => o.rel === "next");
 
-            await fetch(nextPageURL['href']).then(async (res)=>{
-                res=await res.json()
-                links=res.links
-                postData=res.data
+            await fetch(nextPageURL['href']).then(async (res) => {
+                res = await res.json()
+                links = res.links
+                postData = res.data
                 generateUI(postData)
-                currentPageNumber+=1
+                currentPageNumber += 1
                 document.getElementById("prev-button").disabled = currentPageNumber === 1 ? true : false
             })
 
@@ -125,16 +128,16 @@ window.followFriend = async (event) => {
 }
 
 function generateUI(data) {
-    document.getElementById("posts").innerHTML=""
+    document.getElementById("posts").innerHTML = ""
     data.forEach(async obj => {
         let post_time = timeago.format(obj.data.post_time);
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
         let userData = await getUser(obj.data.user_id)
         userData = userData.data.data
-
+        let tagsHTML = generateTags(obj.data.tags)
         let user_image_url = userData.img_url ? userData.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
-        let userName = userData.first_name + " " + userData.last_name
-
+        let userName = (userData.first_name && userData.last_name) ? userData.first_name + " " + userData.last_name : userData.organization_name
+        console.log(userName)
         let post_image_url = obj.data.image === null ? obj.data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg" : obj.data.image
         let card = ` <div class="card rounded" style="margin-top: 20px">
                             <div class="card-header">
@@ -146,7 +149,7 @@ function generateUI(data) {
                                             <p id="post-by" class="m-0"><a href="${post_url + "/users.html?id=" + userData.id}">${userName}</a></p>
                                             <p class="tx-11 text-muted" id="post-time">${post_time}</p>
                                         </div>
-                                    </div>
+                                        
                                     <div class="dropdown">
                                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -155,25 +158,20 @@ function generateUI(data) {
                                             <li><a class="dropdown-item" href=${post_url + "/post.html?id=" + obj.data.post_id}>Go to Post</a></li>
                                         </ul>
                                     </div>
+                                    
                                 </div>
                             </div>
+                            <div class="row">
+                            <div class="col">
+                            ${tagsHTML}
+                            </div>
+                            </div>
+                            
                             <div class="card-body">
                                 <p id="post-desc" class="mb-3 tx-14">${obj.data.descr}</p>
                                 <img class="img-fluid" src="${post_image_url}" alt="">
                             </div>
-                            <div class="card-footer">
-                                <div class="d-flex post-actions">
-                                    <a href="javascript:;" class="d-flex align-items-center text-muted mr-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                             stroke-linecap="round" stroke-linejoin="round"
-                                             class="feather feather-heart icon-md">
-                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                        </svg>
-                                        <p class="d-none d-md-block ml-2">Like</p>
-                                    </a>
-                                </div>
-                            </div>
+                            
                         </div>`
 
         document.getElementById("posts").innerHTML += card
@@ -191,11 +189,12 @@ function generateFriendsUI(friends, users) {
         if (!friendIds.includes(obj.data.id) && obj.data.id !== window.localStorage.getItem("currentUser")) {
             let user_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3) + "/users.html?id=" + obj.data.id
             let image_url = obj.data.img_url ? obj.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
+            let userName = (obj.data.first_name && obj.data.last_name) ? obj.data.first_name + " " + obj.data.last_name : obj.data.organization_name
             let body = `<div  id="friends" class="d-flex justify-content-between mb-2 pb-2 border-bottom"><div class="d-flex align-items-center hover-pointer">
                                         <img class="img-xs rounded-circle"
                                              src="${image_url}" alt="">
                                         <div class="ml-2 p-1 mt-3">
-                                            <p><a href="${user_url}">${obj.data.first_name + " " + obj.data.last_name}</a></p>
+                                            <p><a href="${user_url}">${userName}</a></p>
 
                                         </div>
                                     </div>
@@ -222,6 +221,20 @@ function generateFriendsUI(friends, users) {
 
     document.getElementById("friends").innerHTML += cards.join(" ")
     return cards
+}
+
+function generateTags(data) {
+    let html = ""
+    if (data) {
+        data = data.split("#")
+        let tagHTML = ""
+        data.forEach(tag => {
+            if (tag !== "")
+                tagHTML += `<span class="badge badge-pill bg-primary badge-primary">#${tag}</span>   `
+        })
+        html += tagHTML
+    }
+    return html
 }
 
 

@@ -2,6 +2,7 @@
 let POST_MODE = false
 
 async function initMap() {
+
     if (!window.localStorage.getItem("currentUser")) {
         window.localStorage.clear()
         window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net/index.html"
@@ -51,7 +52,7 @@ async function initMap() {
         });
         post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
         google.maps.event.addListener(marker, "click", () => {
-            infoWindow.setContent(`<h5 id="${data.post_id}" >${data.descr}</h5><br>
+            infoWindow.setContent(`<h5 id="${data.post_id}" >${data.descr}</h5>
                 
                 <a href=${post_url + "/post.html?id=" + data.post_id} >Take me to post</a>`)
             infoWindow.open(window.map, marker)
