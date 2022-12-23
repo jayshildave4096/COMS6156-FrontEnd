@@ -1,13 +1,14 @@
 window.onload = async () => {
     if (!window.localStorage.getItem("currentUser")) {
         window.localStorage.clear()
-        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
-
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net/index.html"
     }
     document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
-    document.getElementById("logout-tab").addEventListener("click",  () => {
+    document.getElementById("logout-tab").addEventListener("click", async () => {
         window.localStorage.clear()
-        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
+        let r = await fetch("https://socialmaps.link/auth/logout").then(res=>{
+            window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net/index.html"
+        })
     })
     const urlSearchParams = new URLSearchParams(window.location.search);
     const params = Object.fromEntries(urlSearchParams.entries());

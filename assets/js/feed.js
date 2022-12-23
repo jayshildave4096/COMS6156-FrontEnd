@@ -1,16 +1,30 @@
+let currentPageNumber = 1
+let links=null
+let postData=null
 window.onload = async () => {
     try {
-
+        //IF NO USER LOGGED IN
         if (!window.localStorage.getItem("currentUser")) {
             window.localStorage.clear()
-            window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
+            window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net/index.html"
         }
+
+
         document.getElementById("user-nav-link").href = `users.html?id=${window.localStorage.getItem("currentUser")}`
-        document.getElementById("logout-tab").addEventListener("click", () => {
+        document.getElementById("logout-tab").addEventListener("click", async () => {
             window.localStorage.clear()
-            window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
+            let r = await fetch("https://socialmaps.link/auth/logout").then(res => {
+                window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net/index.html"
+            })
         })
-        let postData = await getFeedData()
+
+        document.getElementById("prev-button").disabled = currentPageNumber === 1 ? true : false
+
+
+        postData = await getFeedData()
+        links = postData.links
+
+        postData = postData.data
         let currentUserID = window.localStorage.getItem("currentUser")
         document.getElementById("feed-div").style.display = "block"
         document.getElementById("error-text").style.display = "none"
@@ -22,6 +36,35 @@ window.onload = async () => {
         console.log("USERS", allUsers)
         generateFriendsUI(friendsData, allUsers)
 
+        document.getElementById("prev-button").addEventListener("click", async (event) => {
+
+            let prevPageURL = links.find(o => o.rel === "prev");
+
+            await fetch(prevPageURL['href']).then(async (res)=>{
+
+                res= await res.json()
+                links=res.links
+                postData=res.data
+                generateUI(postData)
+                currentPageNumber-=1
+                document.getElementById("prev-button").disabled = currentPageNumber === 1 ? true : false
+            })
+        })
+        document.getElementById("next-button").addEventListener("click", async (event) => {
+            let nextPageURL = links.find(o => o.rel === "next");
+
+            await fetch(nextPageURL['href']).then(async (res)=>{
+                res=await res.json()
+                links=res.links
+                postData=res.data
+                generateUI(postData)
+                currentPageNumber+=1
+                document.getElementById("prev-button").disabled = currentPageNumber === 1 ? true : false
+            })
+
+
+        })
+
     } catch (e) {
         console.log(e)
         document.getElementById("error-text").innerHTML = `Something went wrong`
@@ -31,15 +74,21 @@ window.onload = async () => {
 
 // FUNCTION TO MAKE CALL TO API GATEWAY TO FETCH ALL POSTS
 async function getFeedData() {
-    return await sdk.postsGet({}, {}, {}).then(function (res) {
 
-        return res.data.data
+    let params = {
+        "id": window.localStorage['currentUser'],
+    }
+
+    return await sdk.feedIdGet(params, {}, {}).then(function (res) {
+
+        return res.data
     });
+
+
 }
 
 // FUNCTION TO GET FRIENDS OF USERS
 async function getFriendsOfUser(id) {
-    // TODO : add dynamic ID
     return await sdk.usersIdFriendsGet({id: id}, {}, {}).then(function (res) {
         return res.data
     });
@@ -76,23 +125,25 @@ window.followFriend = async (event) => {
 }
 
 function generateUI(data) {
+    document.getElementById("posts").innerHTML=""
     data.forEach(async obj => {
         let post_time = timeago.format(obj.data.post_time);
         let post_url = window.location.href.substring(0, window.location.href.indexOf("src") + 3)
+        let userData = await getUser(obj.data.user_id)
+        userData = userData.data.data
 
-        let user = await getUser(obj.data.user_id)
-        let user_image_url = user.data.data.img_url ? user.data.data.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
-        userName = user.data.data.first_name + " " + user.data.data.last_name
+        let user_image_url = userData.img_url ? userData.img_url : `https://www.bootdey.com/img/Content/avatar/avatar${Math.floor(Math.random() * 8 + 1)}.png`
+        let userName = userData.first_name + " " + userData.last_name
 
         let post_image_url = obj.data.image === null ? obj.data.type === "USER_POST" ? "../images/event1.jpeg" : "../images/event2.jpeg" : obj.data.image
-        let card = ` <div class="card rounded" style="margin-top: 20px;">
+        let card = ` <div class="card rounded" style="margin-top: 20px">
                             <div class="card-header">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center">
-                                        <img class="img-xs rounded-circle p-0"
+                                        <img class=" img-xs rounded-circle p-0"
                                              src="${user_image_url}" alt="">
                                         <div class="p-1 mt-3">
-                                            <p id="post-by" class="m-0"><a href="${post_url + "/users.html?id=" + user.data.data.id}">${userName}</a></p>
+                                            <p id="post-by" class="m-0"><a href="${post_url + "/users.html?id=" + userData.id}">${userName}</a></p>
                                             <p class="tx-11 text-muted" id="post-time">${post_time}</p>
                                         </div>
                                     </div>

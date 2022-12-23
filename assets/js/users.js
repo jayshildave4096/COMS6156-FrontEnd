@@ -1,26 +1,23 @@
+
+
 async function initUser() {
 
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(urlSearchParams.entries());
-    console.log(params)
-    if (params.id !== undefined) {
-        window.localStorage["currentUser"] = params.id
-    }
-
-    if (!window.localStorage.getItem("currentUser")) {
-        window.localStorage.clear()
-        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
-
-    }
     const user_id = get_id();
+    let URL_user;
     console.log(user_id);
     if (user_id == -1) {
         alert("No User Found")
         window.localStorage.clear()
-        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net"
-    } else {
-        window.localStorage["currentUser"] = user_id
+        window.location.href = "https://d1kit0w7dgvwzq.cloudfront.net/index.html"
     }
+    else{
+        if(!window.localStorage.getItem('currentUser')){
+            window.localStorage['currentUser']=user_id
+        }
+        URL_user=user_id
+    }
+
+
     document.getElementById("user-nav-link").href = `users.html?id=${user_id}`
 
     // FETCH THE CURRENT USER
@@ -55,7 +52,7 @@ async function initUser() {
 <div class="col-11"><a href="${"users.html?id=" + friend_details.id}">${friend_details['first_name'] + ' ' + friend_details['last_name']}</a>
 </div>
 <div class="col-1">
-<span class="pull-right"><button id="friend_id-${friend_details.id}" class="unfollow-button btn btn-warning mr-2 ">Unfollow</button></span>
+<span class="pull-right">${URL_user===window.localStorage['currentUser']?`<button id="friend_id-${friend_details.id}" class="unfollow-button btn btn-warning mr-2 ">Unfollow</button>`: ""}</span>
 </div>
 </div>
                 </li>
@@ -94,17 +91,19 @@ async function getUserPosts(user_id) {
 }
 
 async function handleUnfollow(event) {
-    if (event.target.id.startsWith("friend_id")) {
-        let currentUser = window.localStorage['currentUser']
-        let id = event.target.id.substring(10)
-        try {
-            let r = await sdk.usersIdFriendsDelete({id: currentUser}, {id: id}, {})
-            alert("Friend Unfollowed Successfully")
-            location.reload()
-        } catch (e) {
-            alert("Could not Unfollow Friend")
-        }
+    if (URL_user === window.localStorage['currentUser']) {
+        if (event.target.id.startsWith("friend_id")) {
+            let currentUser = window.localStorage['currentUser']
+            let id = event.target.id.substring(10)
+            try {
+                let r = await sdk.usersIdFriendsDelete({id: currentUser}, {id: id}, {})
+                alert("Friend Unfollowed Successfully")
+                location.reload()
+            } catch (e) {
+                alert("Could not Unfollow Friend")
+            }
 
+        }
     }
 }
 
